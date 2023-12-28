@@ -1,0 +1,8 @@
+{
+  "mixinConfigs": [
+    "velvet.mixins.json"
+  ],
+  "entrypoints": [
+    "dev.velvet.Run"
+  ]
+}
