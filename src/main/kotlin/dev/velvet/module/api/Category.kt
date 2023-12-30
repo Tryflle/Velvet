@@ -5,5 +5,5 @@ enum class Category(name: String) {
     MOVEMENT("Movement"),
     PLAYER("Player"),
     RENDER("Render"),
-    ETC("Etc")
+    MISC("Misc")
 }
