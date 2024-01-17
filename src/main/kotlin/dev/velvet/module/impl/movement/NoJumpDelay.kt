@@ -10,6 +10,6 @@ class NoJumpDelay: Module("NoJumpDelay", "Removes delay between jumps", Category
 
     @SubscribeEvent
     fun onTick(e: TickEvent) {
-        if (mc.isInGame() && mc.thePlayer.onGround) mc.thePlayer.jumpTicks = 0
+        if (mc.isInGame && mc.thePlayer.onGround) mc.thePlayer.jumpTicks = 0
     }
 }
