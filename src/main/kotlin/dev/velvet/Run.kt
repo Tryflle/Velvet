@@ -1,5 +1,6 @@
 package dev.velvet
 
+import dev.velvet.command.api.CommandManager
 import dev.velvet.module.api.ModuleManager
 import net.weavemc.loader.api.ModInitializer
 import net.weavemc.loader.api.event.EventBus
@@ -13,5 +14,6 @@ class Run: ModInitializer {
     }
     private fun init() {
         EventBus.subscribe(ModuleManager)
+        EventBus.subscribe(CommandManager)
     }
 }

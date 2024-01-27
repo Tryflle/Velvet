@@ -1,33 +1,43 @@
 package dev.velvet.module.api
 
+import dev.velvet.module.impl.combat.AutoClicker
 import dev.velvet.module.impl.combat.NoHitDelay
 import dev.velvet.module.impl.movement.NoJumpDelay
+import dev.velvet.module.impl.movement.Sprint
 import dev.velvet.module.impl.player.NoItemRelease
 import dev.velvet.module.impl.render.Chams
 import dev.velvet.module.impl.render.ClickGUI
-import dev.velvet.util.game.PlayerUtils
+import dev.velvet.module.impl.render.Overlay
 import net.minecraft.client.Minecraft
 import net.weavemc.loader.api.event.KeyboardEvent
 import net.weavemc.loader.api.event.SubscribeEvent
 
 object ModuleManager {
-    private val modules = ArrayList<Module>(
-        listOf(
-            NoHitDelay(),
-            Chams(),
-            NoItemRelease(),
-            NoJumpDelay(),
-            ClickGUI()
-        )
+
+    private val modules: HashMap<String, Module> = hashMapOf(
+        NoHitDelay().name to NoHitDelay(),
+        AutoClicker().name to AutoClicker(),
+        NoItemRelease().name to NoItemRelease(),
+        NoJumpDelay().name to NoJumpDelay(),
+        ClickGUI().name to ClickGUI(),
+        Overlay().name to Overlay(),
+        Sprint().name to Sprint()
     )
 
-    fun getModules(): ArrayList<Module> = modules
+    fun getModules(): HashMap<String, Module> = modules
 
     fun isModuleEnabled(module: Module): Boolean = module.enabled
 
     @SubscribeEvent
     fun onKey(e: KeyboardEvent) {
-        if (e.keyState && PlayerUtils.inGame() && Minecraft.getMinecraft().currentScreen == null)
-            modules.forEach { if (it.bind == e.keyCode) it.toggle() }
+        if (e.keyState && Minecraft.getMinecraft().currentScreen == null)
+            modules.values.forEach { if (it.bind == e.keyCode) it.toggle() }
     }
+
+    //TODO: Module ideas:
+    // Render - ESP
+    // Combat - Velocity, Backtrack, Aura, AimAssist, RightClicker, Reach, ClickAssist, Critical
+    // Player - BedBreaker, Timer, FakeLag, Blink, LagRange, FastPlace, NoRotate, Manager, Stealer, SafeWalk
+    // Movement - Speed, Flight, KeepSprint, NoSlow, InventoryMove
+    // Misc - AutoRespawn
 }

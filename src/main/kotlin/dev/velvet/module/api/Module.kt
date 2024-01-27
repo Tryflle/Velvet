@@ -7,7 +7,7 @@ open class Module(
     val name: String,
     val description: String,
     val category: Category,
-    val bind: Int,
+    var bind: Int,
     val settings: Array<Setting>
 ) {
     var enabled = false
