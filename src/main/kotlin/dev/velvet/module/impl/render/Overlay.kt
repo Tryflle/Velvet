@@ -18,7 +18,7 @@ class Overlay : Module("Overlay", "Renders the overlay", Category.RENDER, 0, emp
         if (!PlayerUtils.isInGame() || mc.currentScreen != null) return
         mc.fontRendererObj.drawStringWithShadow("velvet dev", 2f, 2f, 0xa30a91)
         ModuleManager.getModules().values.forEach() { module ->
-            if (module is ClickGUI || module is Overlay) return
+            if (module is ClickGUI || module is Overlay) return@forEach
             if (module.enabled) enabledMods.add(module.name)
             if (!module.enabled) enabledMods.remove(module.name)
         }

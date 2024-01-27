@@ -9,10 +9,10 @@ data class SliderSetting(
     override val name: String,
     override val description: String,
     override val subSettings: Array<Setting>,
-    var min: Int,
-    var max: Int,
-    var intervals: Int,
-    var value: Int
+    var min: Double,
+    var max: Double,
+    var intervals: Double,
+    var value: Double
 ): Setting()
 data class TickSetting(
     override val name: String,

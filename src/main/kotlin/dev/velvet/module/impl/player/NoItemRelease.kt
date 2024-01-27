@@ -10,15 +10,17 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.weavemc.loader.api.event.PacketEvent
 import net.weavemc.loader.api.event.SubscribeEvent
 
-private val blacklistBow = TickSetting("Blacklist Bow", "Prevents you from dropping bows", emptyArray<Setting>(), false)
+private var blacklistBow = TickSetting("Blacklist Bow", "Prevents you from dropping bows", emptyArray<Setting>(), false)
 
 class NoItemRelease: Module("NoItemRelease", "Prevents you from dropping items", Category.PLAYER, 0, arrayOf(blacklistBow)) {
 
     //TODO: HOW ON EARTH DOES THIS CANCEL ALL PACKETS WHAT IM GOING INSANE
     @SubscribeEvent
     fun onPacket(e: PacketEvent.Send) {
-        if (PlayerUtils.isInGame() && e.packet is C07PacketPlayerDigging && (e.packet as C07PacketPlayerDigging).getStatus() == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM)
+        if (PlayerUtils.isInGame()) {
             if (mc.thePlayer.heldItem.item is ItemBow && blacklistBow.value) return
-            e.cancelled = true
+            if (e.packet is C07PacketPlayerDigging && (e.packet as C07PacketPlayerDigging).getStatus() == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM)
+                e.cancelled = true
+        }
     }
 }

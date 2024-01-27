@@ -1,9 +1,12 @@
 package dev.velvet.module.api
 
 import dev.velvet.module.impl.combat.AutoClicker
+import dev.velvet.module.impl.combat.Backtrack
 import dev.velvet.module.impl.combat.NoHitDelay
+import dev.velvet.module.impl.combat.Velocity
 import dev.velvet.module.impl.movement.NoJumpDelay
 import dev.velvet.module.impl.movement.Sprint
+import dev.velvet.module.impl.player.FastPlace
 import dev.velvet.module.impl.player.NoItemRelease
 import dev.velvet.module.impl.render.Chams
 import dev.velvet.module.impl.render.ClickGUI
@@ -21,7 +24,10 @@ object ModuleManager {
         NoJumpDelay().name to NoJumpDelay(),
         ClickGUI().name to ClickGUI(),
         Overlay().name to Overlay(),
-        Sprint().name to Sprint()
+        Sprint().name to Sprint(),
+        Backtrack().name to Backtrack(),
+        Velocity().name to Velocity(),
+        FastPlace().name to FastPlace()
     )
 
     fun getModules(): HashMap<String, Module> = modules
@@ -36,7 +42,7 @@ object ModuleManager {
 
     //TODO: Module ideas:
     // Render - ESP
-    // Combat - Velocity, Backtrack, Aura, AimAssist, RightClicker, Reach, ClickAssist, Critical
+    // Combat - Aura, AimAssist, RightClicker, Reach, ClickAssist, Critical
     // Player - BedBreaker, Timer, FakeLag, Blink, LagRange, FastPlace, NoRotate, Manager, Stealer, SafeWalk
     // Movement - Speed, Flight, KeepSprint, NoSlow, InventoryMove
     // Misc - AutoRespawn
