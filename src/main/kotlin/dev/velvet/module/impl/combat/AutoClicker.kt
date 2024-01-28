@@ -24,7 +24,7 @@ private var cps: Int = 0
 
 
 class AutoClicker : Module("AutoClicker", "Automatically clicks", Category.COMBAT, 0, arrayOf(maxCPS, minCPS)) {
-    //TODO: Finish this: Add better random, add break blocks and some conditionals.
+    //TODO: Add break blocks and some conditionals.
 
     @SubscribeEvent
     fun onRenderHand(e: RenderHandEvent) {
@@ -43,11 +43,13 @@ class AutoClicker : Module("AutoClicker", "Automatically clicks", Category.COMBA
     }
 
     private fun setCPS() {
+        val dropChance: Int = randomInt(1, 70)
         val upRange: Int = randomInt(1, 4)
         val downRange: Int = randomInt(2, 5)
         minCps = minCPS.value.toInt() + downRange
         maxCps = maxCPS.value.toInt() + upRange
         cps = if (minCps == maxCps) minCps else randomInt(minCps, maxCps)
+        if (dropChance <= 2) cps -= randomInt(2, 5)
     }
 
     private fun clickMouse() {

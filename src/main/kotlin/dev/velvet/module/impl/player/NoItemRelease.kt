@@ -14,11 +14,10 @@ private var blacklistBow = TickSetting("Blacklist Bow", "Prevents you from dropp
 
 class NoItemRelease: Module("NoItemRelease", "Prevents you from dropping items", Category.PLAYER, 0, arrayOf(blacklistBow)) {
 
-    //TODO: HOW ON EARTH DOES THIS CANCEL ALL PACKETS WHAT IM GOING INSANE
     @SubscribeEvent
     fun onPacket(e: PacketEvent.Send) {
         if (PlayerUtils.isInGame()) {
-            if (mc.thePlayer.heldItem.item is ItemBow && blacklistBow.value) return
+            if (mc?.thePlayer?.heldItem?.item is ItemBow? && blacklistBow.value) return
             if (e.packet is C07PacketPlayerDigging && (e.packet as C07PacketPlayerDigging).getStatus() == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM)
                 e.cancelled = true
         }

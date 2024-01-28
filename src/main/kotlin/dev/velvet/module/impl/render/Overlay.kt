@@ -11,7 +11,7 @@ class Overlay : Module("Overlay", "Renders the overlay", Category.RENDER, 0, emp
 
     private var offset: Float = 0F
     private var enabledMods: ArrayList<String> = ArrayList()
-    //Todo: Fix this. It doesn't render enabled modules, only "velvet dev".
+    //Todo: Fix each module being listed 900 times over and killing your frames lol
 
     @SubscribeEvent
     fun onRender(e: RenderGameOverlayEvent.Post) {
@@ -23,6 +23,7 @@ class Overlay : Module("Overlay", "Renders the overlay", Category.RENDER, 0, emp
             if (!module.enabled) enabledMods.remove(module.name)
         }
         val sortedEnabledMods: List<String> = enabledMods.sortedBy { it.length }.reversed()
+        offset = 0f
         sortedEnabledMods.forEach() { string ->
             mc.fontRendererObj.drawStringWithShadow(string, 2f, 12f + offset, 0x22FFFFFF)
             offset += 10

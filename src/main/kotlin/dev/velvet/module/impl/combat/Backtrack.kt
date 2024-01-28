@@ -9,14 +9,13 @@ import dev.velvet.util.packet.PacketUtils
 import dev.velvet.util.packet.TimedPacket
 import dev.velvet.util.render.RenderUtils
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.network.INetHandler
-import net.minecraft.network.Packet
 import net.minecraft.network.play.server.S18PacketEntityTeleport
 import net.minecraft.util.AxisAlignedBB
 import net.weavemc.loader.api.event.*
 import java.awt.Color
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+
 
 private var realz: Int = 0
 private var realy: Int = 0
@@ -31,7 +30,7 @@ private var noRange = TickSetting("No range", "No range", emptyArray(), false)
 private var target: Optional<EntityPlayer> = Optional.empty()
 private var incomingPackets = ConcurrentLinkedQueue<TimedPacket>()
 class Backtrack : Module("Backtrack", "Hit players from previous locations", Category.COMBAT, 0, arrayOf(maxRange, minRange, delay, esp, noRange)) {
-    //TODO: Fix crash due to casting INetHandlerPacketClient to INetHandler and fix skidded ESP $$$
+    //TODO: Fix skidded ESP lol
 
     @SubscribeEvent
     fun setTarget(e: TickEvent.Pre) {
@@ -40,13 +39,14 @@ class Backtrack : Module("Backtrack", "Hit players from previous locations", Cat
             return
         }
         if (PlayerUtils.isInGame()) {
-            val potentialTarget = mc.theWorld.playerEntities.stream()
+            target = if (mc.theWorld != null
+            ) mc.theWorld.playerEntities.stream()
                 .filter { player: EntityPlayer ->
                     player.getEntityId() != mc.thePlayer.getEntityId() &&
                             player.getDistanceToEntity(mc.thePlayer) <= maxRange.value &&
                             player.getDistanceToEntity(mc.thePlayer) >= minRange.value
                 }
-                .findFirst()
+                .findFirst() else Optional.empty()
         }
     }
 
@@ -58,10 +58,10 @@ class Backtrack : Module("Backtrack", "Hit players from previous locations", Cat
     @SubscribeEvent
     fun onPacket(e: PacketEvent.Receive) {
         if (PlayerUtils.isInGame()) {
+            if (!e.packet::class.qualifiedName!!.startsWith("net.minecraft.network.play.server")) return
             if (e.packet is S18PacketEntityTeleport) {
                 val packet = e.packet as S18PacketEntityTeleport
                 if (target.isPresent && packet.entityId == target.get().getEntityId()) {
-                    println("Target found, called from S18: " + target.get().name)
                     realx = packet.x
                     realy = packet.y
                     realz = packet.z
@@ -80,7 +80,7 @@ class Backtrack : Module("Backtrack", "Hit players from previous locations", Cat
         }
         incomingPackets.removeIf { timedPacket ->
             if (System.currentTimeMillis() - timedPacket.time > getTime()) {
-                PacketUtils.handle(timedPacket.packet as Packet<INetHandler>, false)
+                PacketUtils.handle(timedPacket.packet, false)
                 true
             } else false
         }
@@ -124,7 +124,7 @@ class Backtrack : Module("Backtrack", "Hit players from previous locations", Cat
         if (PlayerUtils.isInGame()) {
             try {
                 incomingPackets.removeIf { timedPacket ->
-                    PacketUtils.handle(timedPacket.packet as Packet<INetHandler>, false)
+                    PacketUtils.handle(timedPacket.packet, false)
                     true
                 }
             } catch (ignored: Exception) {

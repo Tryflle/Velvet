@@ -59,7 +59,7 @@ public class Keybind extends Component {
 		}
 	}
 
-	//fix this as well
+	//TODO: Fix binding
 	@Override
 	public void keyTyped(char typedChar, int key) {
 		if (this.binding) {

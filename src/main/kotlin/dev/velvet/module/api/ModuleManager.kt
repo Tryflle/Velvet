@@ -6,6 +6,7 @@ import dev.velvet.module.impl.combat.NoHitDelay
 import dev.velvet.module.impl.combat.Velocity
 import dev.velvet.module.impl.movement.NoJumpDelay
 import dev.velvet.module.impl.movement.Sprint
+import dev.velvet.module.impl.player.Blink
 import dev.velvet.module.impl.player.FastPlace
 import dev.velvet.module.impl.player.NoItemRelease
 import dev.velvet.module.impl.render.Chams
@@ -27,7 +28,8 @@ object ModuleManager {
         Sprint().name to Sprint(),
         Backtrack().name to Backtrack(),
         Velocity().name to Velocity(),
-        FastPlace().name to FastPlace()
+        FastPlace().name to FastPlace(),
+        Blink().name to Blink()
     )
 
     fun getModules(): HashMap<String, Module> = modules
@@ -37,7 +39,7 @@ object ModuleManager {
     @SubscribeEvent
     fun onKey(e: KeyboardEvent) {
         if (e.keyState && Minecraft.getMinecraft().currentScreen == null)
-            modules.values.forEach { if (it.bind == e.keyCode) it.toggle() }
+            modules.values.find { it.bind == e.keyCode }?.toggle() ?: return
     }
 
     //TODO: Module ideas:

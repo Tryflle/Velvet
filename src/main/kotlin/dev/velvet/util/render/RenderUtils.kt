@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11.*
 
 object RenderUtils {
     fun drawFilledBox(axisAlignedBB: AxisAlignedBB) {
-        //Stolen from LiquidBounce
+        //Stolen from LiquidBounce (WHAT IS THIS CODE MAN??)
         val tessellator = Tessellator.getInstance()
         val worldRenderer = tessellator.worldRenderer
         worldRenderer.begin(7, DefaultVertexFormats.POSITION)
