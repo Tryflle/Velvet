@@ -4,11 +4,11 @@ import dev.velvet.module.impl.combat.AutoClicker
 import dev.velvet.module.impl.combat.Backtrack
 import dev.velvet.module.impl.combat.NoHitDelay
 import dev.velvet.module.impl.combat.Velocity
+import dev.velvet.module.impl.misc.Killsults
 import dev.velvet.module.impl.movement.NoJumpDelay
+import dev.velvet.module.impl.movement.Speed
 import dev.velvet.module.impl.movement.Sprint
-import dev.velvet.module.impl.player.Blink
-import dev.velvet.module.impl.player.FastPlace
-import dev.velvet.module.impl.player.NoItemRelease
+import dev.velvet.module.impl.player.*
 import dev.velvet.module.impl.render.Chams
 import dev.velvet.module.impl.render.ClickGUI
 import dev.velvet.module.impl.render.Overlay
@@ -29,7 +29,12 @@ object ModuleManager {
         Backtrack().name to Backtrack(),
         Velocity().name to Velocity(),
         FastPlace().name to FastPlace(),
-        Blink().name to Blink()
+        Blink().name to Blink(),
+        Chams().name to Chams(),
+        AntiVoid().name to AntiVoid(),
+        Timer().name to Timer(),
+        Speed().name to Speed(),
+        Killsults().name to Killsults()
     )
 
     fun getModules(): HashMap<String, Module> = modules

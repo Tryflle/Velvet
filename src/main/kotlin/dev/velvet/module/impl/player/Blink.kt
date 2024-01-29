@@ -1,6 +1,5 @@
 package dev.velvet.module.impl.player
 
-import dev.velvet.event.PacketDirection
 import dev.velvet.event.WindowResizeEvent
 import dev.velvet.module.api.Category
 import dev.velvet.module.api.Module
@@ -38,8 +37,10 @@ class Blink : Module("Blink", "Blinks", Category.PLAYER, 0, arrayOf(inBound, out
     @SubscribeEvent
     fun onPacketSend(e: PacketEvent.Send) {
         if (PlayerUtils.isInGame()) {
-            if (outBound.value) e.cancelled = true
-            outgoingPackets.add(TimedPacket(e.packet, System.currentTimeMillis()))
+            if (outBound.value && e.packet.javaClass.canonicalName.startsWith("net.minecraft.network.play.client")) {
+                e.cancelled = true
+                outgoingPackets.add(TimedPacket(e.packet, System.currentTimeMillis()))
+            }
         }
     }
 
@@ -58,7 +59,7 @@ class Blink : Module("Blink", "Blinks", Category.PLAYER, 0, arrayOf(inBound, out
     @SubscribeEvent
     fun onWindowResize(e: WindowResizeEvent) {
         val sr = ScaledResolution(Minecraft.getMinecraft())
-        sh = sr.scaledHeight.toFloat()/2
+        sh = sr.scaledHeight.toFloat() / 2
     }
 
     override fun onEnable() {
@@ -67,22 +68,41 @@ class Blink : Module("Blink", "Blinks", Category.PLAYER, 0, arrayOf(inBound, out
     }
 
     override fun onDisable() {
-        if (!outgoingPackets.isEmpty()) {
-            outgoingPackets.forEach { timedPacket ->
-                PacketUtils.send(timedPacket.packet)
+        if (!outgoingPackets.isEmpty() && outBound.value) {
+            try {
+                outgoingPackets.forEach { timedPacket ->
+                    PacketUtils.send(timedPacket.packet)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
-        if (!incomingPackets.isEmpty()) {
-            incomingPackets.forEach { timedPacket ->
-                PacketUtils.handle(timedPacket.packet, true)
+        if (!incomingPackets.isEmpty() && inBound.value) {
+            try {
+                incomingPackets.forEach { timedPacket ->
+                    PacketUtils.handle(timedPacket.packet, false)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+            outgoingPackets.clear()
+            incomingPackets.clear()
         }
-        outgoingPackets.clear()
-        incomingPackets.clear()
-    }
 
-    fun onShutdown (e: ShutdownEvent) { this.toggle() }
-    fun onGameStart (e: StartGameEvent) { this.toggle() }
-    fun onWorldLoad (e: WorldEvent) { this.toggle() }
-    fun onTick (e: TickEvent) { if (!PlayerUtils.isInGame()) this.toggle() }
+        fun onShutdown(e: ShutdownEvent) {
+            this.toggle()
+        }
+
+        fun onGameStart(e: StartGameEvent) {
+            this.toggle()
+        }
+
+        fun onWorldLoad(e: WorldEvent) {
+            this.toggle()
+        }
+
+        fun onTick(e: TickEvent.Pre) {
+            if (!PlayerUtils.isInGame()) this.toggle()
+        }
+    }
 }

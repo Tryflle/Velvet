@@ -8,8 +8,7 @@ import net.minecraft.client.settings.KeyBinding
 import net.weavemc.loader.api.event.RenderHandEvent
 import net.weavemc.loader.api.event.SubscribeEvent
 import org.lwjgl.input.Mouse
-import java.util.concurrent.ThreadLocalRandom
-import kotlin.random.Random
+import java.util.Random
 
 
 private var maxCPS: SliderSetting = SliderSetting("MaxCPS", "Maximum CPS", emptyArray(), 1.0, 20.0, 1.0, 12.0)
@@ -18,9 +17,9 @@ private var clicked: Boolean = false
 
 private val t: TimerUtils = TimerUtils()
 
-private var maxCps: Int = 0
-private var minCps: Int = 0
-private var cps: Int = 0
+private var maxCps: Double = 0.0
+private var minCps: Double = 0.0
+private var cps: Double = 0.0
 
 
 class AutoClicker : Module("AutoClicker", "Automatically clicks", Category.COMBAT, 0, arrayOf(maxCPS, minCPS)) {
@@ -43,13 +42,13 @@ class AutoClicker : Module("AutoClicker", "Automatically clicks", Category.COMBA
     }
 
     private fun setCPS() {
-        val dropChance: Int = randomInt(1, 70)
-        val upRange: Int = randomInt(1, 4)
-        val downRange: Int = randomInt(2, 5)
-        minCps = minCPS.value.toInt() + downRange
+        val dropChance: Double = randomDouble(1.0, 70.0)
+        val upRange: Double = randomDouble(1.0, 4.0)
+        val downRange: Double = randomDouble(2.0, 5.0)
+        minCps = minCPS.value.toInt() - downRange
         maxCps = maxCPS.value.toInt() + upRange
-        cps = if (minCps == maxCps) minCps else randomInt(minCps, maxCps)
-        if (dropChance <= 2) cps -= randomInt(2, 5)
+        cps = if (minCps == maxCps) minCps else randomDouble(minCps, maxCps)
+        if (dropChance <= 2) cps -= randomDouble(2.0, 5.0)
     }
 
     private fun clickMouse() {
@@ -58,7 +57,11 @@ class AutoClicker : Module("AutoClicker", "Automatically clicks", Category.COMBA
         KeyBinding.onTick(mc.gameSettings.keyBindAttack.keyCode)
     }
 
-    private fun randomInt(min: Int, max: Int): Int {
-        return ThreadLocalRandom.current().nextInt(min, max)
+    private fun randomDouble(min: Double, max: Double): Double {
+        val random = Random()
+        val mean = min + (max - min) / 2.0
+        val stdDev = (max - min) / 6.0
+        val result = mean + stdDev * random.nextGaussian()
+        return if (result in min..max) result else randomDouble(min, max)
     }
 }

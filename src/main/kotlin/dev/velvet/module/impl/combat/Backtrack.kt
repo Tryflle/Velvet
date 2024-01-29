@@ -132,4 +132,6 @@ class Backtrack : Module("Backtrack", "Hit players from previous locations", Cat
         }
         incomingPackets.clear()
     }
+
+    fun onWorldLoad (e: WorldEvent) { this.toggle() }
 }

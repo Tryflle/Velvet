@@ -10,7 +10,7 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.weavemc.loader.api.event.PacketEvent
 import net.weavemc.loader.api.event.SubscribeEvent
 
-private var blacklistBow = TickSetting("Blacklist Bow", "Prevents you from dropping bows", emptyArray<Setting>(), false)
+private var blacklistBow = TickSetting("Blacklist Bow", "Prevents you from dropping bows", emptyArray<Setting>(), true)
 
 class NoItemRelease: Module("NoItemRelease", "Prevents you from dropping items", Category.PLAYER, 0, arrayOf(blacklistBow)) {
 
